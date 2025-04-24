@@ -2,6 +2,7 @@ import telebot
 import os
 from config import ADMIN_ID, BOT_TOKEN
 from utils import save_pending_email
+from email_sender import send_confirmation_email
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
@@ -14,9 +15,8 @@ def save_email(message):
     email = message.text
     if "@" in email and "." in email:
         save_pending_email(email)
-        confirm_link = f"https://tgreward.shop/join.php?confirm={email}"
-        bot.send_message(message.chat.id, f"Confirmation sent! Please check your email to confirm.")
-        # Email sending moved to email_sender.py run manually or via cron
+        send_confirmation_email(email)
+        bot.send_message(message.chat.id, "📩 Confirmation email sent! Please check your inbox.")
     else:
         bot.send_message(message.chat.id, "Invalid email. Please try again.")
 
